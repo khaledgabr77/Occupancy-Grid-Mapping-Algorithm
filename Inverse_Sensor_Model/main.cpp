@@ -24,8 +24,9 @@ double inverseSensorModel(double x, double y, double theta, double xi, double yi
     double minDelta = -1;
     double alpha = 200, beta = 20;
 
-    //******************TODO: Compute r and phi**********************//
-   
+    //******************Compute r and phi**********************//
+    double r = sqrt(pow(xi - x, 2) + pow(yi - y, 2));
+    double phi = atan2(yi - y, xi - x) - theta;
 
     //Scaling Measurement to [-90 -37.5 -22.5 -7.5 7.5 22.5 37.5 90]
     for (int i = 0; i < 8; i++) {
@@ -52,13 +53,16 @@ double inverseSensorModel(double x, double y, double theta, double xi, double yi
         }
     }
 
-    //******************TODO: Evaluate the three cases**********************//
-    // You also have to consider the cells with Zk > Zmax or Zk < Zmin as unkown states
-    
-    
-    
-    
-    
+    //******************Evaluate the three cases**********************//
+    if (r > min((double)Zmax, Zk + alpha / 2) || fabs(phi - thetaK) > beta / 2 || Zk > Zmax || Zk < Zmin) {
+        return l0;
+    }
+    else if (Zk < Zmax && fabs(r - Zk) < alpha / 2) {
+        return locc;
+    }
+    else if (r <= Zk) {
+        return lfree;
+    }
 }
 
 void occupancyGridMapping(double Robotx, double Roboty, double Robottheta, double sensorData[])
